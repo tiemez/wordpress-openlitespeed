@@ -1,0 +1,5 @@
+install certs using `bash bin/trust-certs.sh`
+
+setup wordpress using
+
+docker compose run cli wp core install --url=<url> --title=<title> --admin_user="<name>" --admin_email=<emailaddress>

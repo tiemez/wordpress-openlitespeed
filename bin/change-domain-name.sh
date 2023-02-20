@@ -1,0 +1,1 @@
+docker compose run cli wp search-replace https://www.resalepartners.nl https://wordpress.hs.nl

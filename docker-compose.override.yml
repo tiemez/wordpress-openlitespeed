@@ -1,0 +1,62 @@
+version: '3.9'
+services:
+  wordpress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    platform: linux/amd64
+    ports:
+      - ${PUB_PORT:-80}:80
+      - ${PUB_PORT_SSL:-443}:443
+    volumes:
+      - wordpress:/var/www/html/:rw
+      - ./wordpress/wp-content:/var/www/html/wp-content:rw
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    restart: on-failure
+    extra_hosts:
+      - host.docker.internal:host-gateway
+      - wordpress.hs.nl:127.0.0.1
+    networks:
+      - rp_wordpress
+  cli:
+    image: wordpress:cli-2.7.1-php8.2
+    volumes:
+      - wordpress:/var/www/html/:rw
+      - ./wordpress/wp-content:/var/www/html/wp-content:rw
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - rp_wordpress
+    profiles:
+      - donotstart
+  mysql:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/initdb.d/:/docker-entrypoint-initdb.d/
+    networks:
+      - rp_wordpress
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+volumes:
+  mysql_data:
+    driver: local
+  wordpress:
+    driver: local
+
+

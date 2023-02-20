@@ -1,0 +1,6 @@
+.env
+.idea/
+wordpress/wp-content/
+!wordpress/wp-content/.gitkeep
+mysql/initdb.d/
+!mysql/initdb.d/.gitkeep
