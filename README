@@ -1,5 +1,7 @@
-install certs using `bash bin/trust-certs.sh`
+wordpress:6.1.1-php8.2 running on openlitespeed
 
 setup wordpress using
 
 docker compose run cli wp core install --url=<url> --title=<title> --admin_user="<name>" --admin_email=<emailaddress>
+
+trust certs (on macbook) using `bash bin/trust-certs.sh`
